@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>tracking.js Demo - Git@Me</title>
+
+  <script src="tracking.min.js"></script>
+  <script src="color.min.js"></script>
+
+  <style>
+    body {
+      margin: auto;
+      padding: 0;
+      width: 100%;
+      text-align:center;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    canvas {
+      -moz-transform: scale(-1, 1);
+      -o-transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+      filter: FlipH;
+      transform: scale(-1, 1);
+
+      width: 50%;
+      height: 50%;
+      border: 8px solid #DDDDDD;
+    }
+    .hprompt {
+      display: none;
+    }
+    .color1{
+      color: #FFFFFF;
+      background: #F012BE;
+      padding:5px;
+      border-radius:3px;
+    }
+    .color2{
+      color: #111111;
+      background: #7FDBFF;
+      padding:5px;
+      border-radius:3px;
+    }
+  </style>
+
+</head>
+<body>
+  <p>&#8617; return to <a href="http://gitat.me">Git @ Me</a></p>
+  <h3 id="p1">Enable your camera &amp; hold up a <span class="color1">magenta</span> or <span class="color2">cyan</span> object.</h3>
+  <h3 id="p2" class="hprompt">Awesome, now move it around.</h3>
+
+  <script type="text/javascript">
+
+    if (detectmob()){
+      alert("This demo is wonky on mobile - proceed at your own risk!");
+    }
+
+    var videoCamera = new tracking.VideoCamera().hide().render().renderVideoCanvas(),
+    ctx = videoCamera.canvas.context;
+
+    videoCamera.track({
+        type: 'color',
+        color: 'magenta',
+        onFound: function(track) {
+
+          document.getElementById("p1").classList.add("hprompt");
+          document.getElementById("p2").classList.remove("hprompt");
+
+          var pixels = track.pixels;
+          for (var i = 0, len = pixels.length; i < len; i += 2) {
+            ctx.fillStyle = "rgb(255,0,255)";
+            ctx.fillRect(pixels[i], pixels[i+1], 2, 2);
+          }
+
+          ctx.fillStyle = "rgb(0,0,0)";
+          ctx.fillRect(track.x, track.y, 5, 5);
+        },
+        onNotFound: function() {
+          document.getElementById("p1").classList.remove("hprompt");
+          document.getElementById("p2").classList.add("hprompt");
+        }
+
+    });
+
+    videoCamera.track({
+        type: 'color',
+        color: 'cyan',
+        onFound: function(track) {
+
+          document.getElementById("p1").classList.add("hprompt");
+          document.getElementById("p2").classList.remove("hprompt");
+
+          var pixels = track.pixels;
+          for (var i = 0, len = pixels.length; i < len; i += 2) {
+            ctx.fillStyle = "rgb(224,255,255)";
+            ctx.fillRect(pixels[i], pixels[i+1], 2, 2);
+          }
+
+          ctx.fillStyle = "rgb(0,0,0)";
+          ctx.fillRect(track.x, track.y, 5, 5);
+        },
+        onNotFound: function() {
+          document.getElementById("p1").classList.remove("hprompt");
+          document.getElementById("p2").classList.add("hprompt");
+        }
+
+    });
+
+    function detectmob() {
+     if ( navigator.userAgent.match(/Android/i)
+     || navigator.userAgent.match(/webOS/i)
+     || navigator.userAgent.match(/iPhone/i)
+     || navigator.userAgent.match(/iPad/i)
+     || navigator.userAgent.match(/iPod/i)
+     || navigator.userAgent.match(/BlackBerry/i)
+     || navigator.userAgent.match(/Windows Phone/i)
+     ) { return true; } else { return false; }
+    }
+  </script>
+
+  <p>&copy; 2014 Neal Shyam</p>
+
+</body>
+</html>
