@@ -55,18 +55,13 @@
   <h3 id="p2" class="hprompt"><span class="color1">Magenta</span> inverts colors. <span class="color2">Cyan</span> displays XYZ position.</h3>
 
   <script type="text/javascript">
-
-    // get selectors for crosshairs
-    cH = document.getElementById('crosshair-h');
-    cV = document.getElementById('crosshair-v');
-
     // detect if on mobile or not.
     if (detectMobile()){
       alert("This demo is wonky on mobile - proceed at your own risk!");
     }
 
     // initiate video
-    var videoCamera = new tracking.VideoCamera().hide().render().renderVideoCanvas(),
+    var videoCamera = new tracking.VideoCamera().hide().renderVideoCanvas(),
     ctx = videoCamera.canvas.context;
 
     // first color tracker
