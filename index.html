@@ -26,7 +26,7 @@
       height: 50%;
       border: 8px solid #DDDDDD;
     }
-    .hprompt {
+    .hide {
       display: none;
     }
     .color1{
@@ -41,30 +41,44 @@
       padding:5px;
       border-radius:3px;
     }
+
+    .invert{
+      -webkit-filter: invert(100%);
+    }
   </style>
 
 </head>
 <body>
   <p>&#8617; return to <a href="http://gitat.me">Git @ Me</a></p>
-  <h3 id="p1">Enable your camera &amp; hold up a <span class="color1">magenta</span> or <span class="color2">cyan</span> object.</h3>
-  <h3 id="p2" class="hprompt">Awesome, now move it around.</h3>
+  <h3 id="p1">Enable your camera &amp; hold up a <span class="color1">Magenta</span> or <span class="color2">Cyan</span> object.</h3>
+
+  <h3 id="p2" class="hprompt"><span class="color1">Magenta</span> inverts colors. <span class="color2">Cyan</span> displays XYZ position.</h3>
 
   <script type="text/javascript">
 
-    if (detectmob()){
+    // get selectors for crosshairs
+    cH = document.getElementById('crosshair-h');
+    cV = document.getElementById('crosshair-v');
+
+    // detect if on mobile or not.
+    if (detectMobile()){
       alert("This demo is wonky on mobile - proceed at your own risk!");
     }
 
+    // initiate video
     var videoCamera = new tracking.VideoCamera().hide().render().renderVideoCanvas(),
     ctx = videoCamera.canvas.context;
 
+    // first color tracker
     videoCamera.track({
         type: 'color',
         color: 'magenta',
         onFound: function(track) {
 
-          document.getElementById("p1").classList.add("hprompt");
-          document.getElementById("p2").classList.remove("hprompt");
+          document.getElementById("p1").classList.add("hide");
+          document.getElementById("p2").classList.remove("hide");
+          // invert colors
+          document.querySelector('canvas').classList.add('invert');
 
           var pixels = track.pixels;
           for (var i = 0, len = pixels.length; i < len; i += 2) {
@@ -76,8 +90,10 @@
           ctx.fillRect(track.x, track.y, 5, 5);
         },
         onNotFound: function() {
-          document.getElementById("p1").classList.remove("hprompt");
-          document.getElementById("p2").classList.add("hprompt");
+          document.getElementById("p1").classList.remove("hide");
+          document.getElementById("p2").classList.add("hide");
+          // revert colors
+          document.querySelector('canvas').classList.remove('invert');
         }
 
     });
@@ -87,9 +103,10 @@
         color: 'cyan',
         onFound: function(track) {
 
-          document.getElementById("p1").classList.add("hprompt");
-          document.getElementById("p2").classList.remove("hprompt");
+          document.getElementById("p1").classList.add("hide");
+          document.getElementById("p2").classList.remove("hide");
 
+          // initiate pixel coloring
           var pixels = track.pixels;
           for (var i = 0, len = pixels.length; i < len; i += 2) {
             ctx.fillStyle = "rgb(224,255,255)";
@@ -98,15 +115,20 @@
 
           ctx.fillStyle = "rgb(0,0,0)";
           ctx.fillRect(track.x, track.y, 5, 5);
+
+          document.getElementById("coords").innerHTML = "\<strong class='color2'>X:\</strong> " +track.x.toFixed(2)+ " \<strong class='color2'>Y:\</strong> " +track.y.toFixed(2)+ " \<strong class='color2'>Z:\</strong> " +track.z.toFixed(2);
+
         },
         onNotFound: function() {
-          document.getElementById("p1").classList.remove("hprompt");
-          document.getElementById("p2").classList.add("hprompt");
+          document.getElementById("p1").classList.remove("hide");
+          document.getElementById("p2").classList.add("hide");
+
+          document.getElementById("coords").innerHTML = "&nbsp;";
         }
 
     });
 
-    function detectmob() {
+    function detectMobile() {
      if ( navigator.userAgent.match(/Android/i)
      || navigator.userAgent.match(/webOS/i)
      || navigator.userAgent.match(/iPhone/i)
@@ -117,6 +139,8 @@
      ) { return true; } else { return false; }
     }
   </script>
+
+  <p id = "coords"></p>
 
   <p>&copy; 2014 Neal Shyam</p>
 
