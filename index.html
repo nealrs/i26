@@ -60,6 +60,10 @@
       alert("This demo is wonky on mobile - proceed at your own risk!");
     }
 
+    // chrome detection
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome){ alert("This demo probably won't work in your browser"); }
+
     // initiate video
     var videoCamera = new tracking.VideoCamera().hide().renderVideoCanvas(),
     ctx = videoCamera.canvas.context;
@@ -136,7 +140,6 @@
   </script>
 
   <p id = "coords"></p>
-
   <p>&copy; 2014 Neal Shyam</p>
 
 </body>
